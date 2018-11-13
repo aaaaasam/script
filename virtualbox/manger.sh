@@ -99,33 +99,35 @@ function manager_vrde() {
 }
 
 # 开启虚拟机
-function start_vms() {
+function start() {
 	parameter_analysis $@
 	if [ -z "${name}" ]; then 
-		eval "f_help start_vms"
+		eval "f_help start"
 	else
 		eval "VBoxManage startvm ${name} --type headless"
 	fi
 }
 
 # 关闭虚拟机
-function stop_vms() {
+function stop() {
 	parameter_analysis $@
 	if [ -z "${name}" ]; then 
-		eval "f_help stop_vms"
+		eval "f_help stop"
 	else
 		eval "VBoxManage controlvm ${name} poweroff"
 	fi
 }
 
 # 快照管理
-function vms_snapshot() {
+function snapshot() {
 	parameter_analysis $@
-	if [ -z "${name}" ] || [ -z "${snapname}" ] || [ -z "${to_do}" ]; then 
-		eval "f_help vms_snapshot"
-	else
+	if [ -z "${name}" ] || [ -z "${to_do}" ]; then 
+		eval "f_help snapshot"
+	elif [[ "${to_do}" == "list" ]]; then
+		eval "VBoxManage snapshot ${name} list"
+	elif [ ! -z "${snapname}" ]; then
 		case "${to_do}" in
-			carete)
+			create)
 			eval "VBoxManage snapshot ${name} take ${snapname}"
 			;;
 			delete)
@@ -134,10 +136,12 @@ function vms_snapshot() {
 			load)
 			eval "VBoxManage snapshot ${name} restore ${snapname}"
 			;;
-			list)
-			eval "VBoxManage snapshot ${name} list"
+			*)
+			eval "f_help snapshot"
 			;;
 		esac
+	else
+		eval "f_help snapshot"
 	fi
 }
 
@@ -186,7 +190,7 @@ function create_new_vms() {
     	create_vms_disk
     	add_install_media
     	manager_vrde
-    	start_vms
+    	start
     fi
 }
 
@@ -203,9 +207,9 @@ function f_help() {
     		"create_vms_disk"
     		"add_install_media"
     		"manager_vrde"
-    		"start_vms"
-    		"stop_vms"
-    		"vms_snapshot"
+    		"start"
+    		"stop"
+    		"snapshot"
     		"create_new_vms"
     		)
     	for i in "${help_list[@]}"; do 
@@ -276,20 +280,20 @@ function help_manager_vrde() {
 }
 
 # 开启虚拟机帮助
-function help_start_vms() {
-	echo -e "\t command start_vms:"
+function help_start() {
+	echo -e "\t command start:"
 	echo -e "\t\t --name=<str>:\t\t虚拟机的名字"
 }
 
 # 关闭虚拟机帮助
-function help_stop_vms() {
-	echo -e "\t command stop_vms:"
+function help_stop() {
+	echo -e "\t command stop:"
 	echo -e "\t\t --name=<str>:\t\t虚拟机的名字"
 }
 
 # 快照管理帮助
-function help_vms_snapshot() {
-	echo -e "\t command vms_snapshot:"
+function help_snapshot() {
+	echo -e "\t command snapshot:"
 	echo -e "\t\t --name=<str>:\t\t虚拟机的名字"
     echo -e "\t\t --to_do=<str>:"
     echo -e "\t\t\t carete:\t创建快照"
@@ -342,17 +346,17 @@ function main() {
 		manager_vrde)
 			manager_vrde $@
 			;;
-		start_vms)
-			start_vms $@
+		start)
+			start $@
 			;;
-		stop_vms)
-			stop_vms $@
+		stop)
+			stop $@
 			;;
 		create_new_vms)
 			create_new_vms $@
 			;;
-		vms_snapshot)
-			vms_snapshot $@
+		snapshot)
+			snapshot $@
 			;;
 		help)
 			f_help $2
@@ -369,3 +373,5 @@ main $@
 #bash vm.sh create_new_vms --name=ubuntu_test_1 --memory=1024 --vram=128 --ostype=Ubuntu_64 --basefolder=/home/sam/virtualbox --cpu=1 --network_interface=enp2s0 --disk_size=20480 --disk_format=vdi --system_image=system_image/ubuntu-16.04.5-server-amd64.iso --status=on
 
 
+
+# vm snapshot --name=ubuntu_test_1 --to_do=delete --snapname=default
