@@ -118,6 +118,30 @@ function stop_vms() {
 	fi
 }
 
+# 快照管理
+function vms_snapshot() {
+	parameter_analysis $@
+	if [ -z "${name}" ] || [ -z "${snapname}" ] || [ -z "${to_do}" ]; then 
+		eval "f_help vms_snapshot"
+	else
+		case "${to_do}" in
+			carete)
+			eval "VBoxManage snapshot ${name} take ${snapname}"
+			;;
+			delete)
+			eval "VBoxManage snapshot ${name} delete ${snapname}"
+			;;
+			load)
+			eval "VBoxManage snapshot ${name} restore ${snapname}"
+			;;
+			list)
+			eval "VBoxManage snapshot ${name} list"
+			;;
+		esac
+	fi
+}
+
+# 创建一个新的虚拟机
 function create_new_vms() {
 	# cpu=1
 	# 	cpu 数量
@@ -181,6 +205,7 @@ function f_help() {
     		"manager_vrde"
     		"start_vms"
     		"stop_vms"
+    		"vms_snapshot"
     		"create_new_vms"
     		)
     	for i in "${help_list[@]}"; do 
@@ -262,6 +287,18 @@ function help_stop_vms() {
 	echo -e "\t\t --name=<str>:\t\t虚拟机的名字"
 }
 
+# 快照管理帮助
+function help_vms_snapshot() {
+	echo -e "\t command vms_snapshot:"
+	echo -e "\t\t --name=<str>:\t\t虚拟机的名字"
+    echo -e "\t\t --to_do=<str>:"
+    echo -e "\t\t\t carete:\t创建快照"
+    echo -e "\t\t\t delete:\t删除快照"
+    echo -e "\t\t\t load:\t\t加载快照"
+    echo -e "\t\t\t list:\t\t快照列表"
+    echo -e "\t\t --snapname=<str>:\t快照名称"
+}
+
 # 创建新的虚拟机帮助
 function help_create_new_vms() {
 	echo -e "\t command create_new_vms:"
@@ -277,6 +314,7 @@ function help_create_new_vms() {
    	echo -e "\t\t --system_image=<str>:\t系统镜像路径"
    	echo -e "\t\t --status=<on|off>:\t开启或关闭vrde"
 }
+
 
 function main() {
     case "${1}" in
@@ -312,6 +350,9 @@ function main() {
 			;;
 		create_new_vms)
 			create_new_vms $@
+			;;
+		vms_snapshot)
+			vms_snapshot $@
 			;;
 		help)
 			f_help $2
