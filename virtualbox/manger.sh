@@ -310,13 +310,13 @@ function help_create_new_vms() {
 	echo -e "\t\t --memory=<int>:\t内存大小(单位：Mb)"
 	echo -e "\t\t --vram=<int>:\t\t显存大小(单位：Mb)"
 	echo -e "\t\t --ostype=<str>:\t虚拟机的系统类型"
-    echo -e "\t\t --basefolder=<str>:\t虚拟机的存储目录(默认:${basefolder})"
-    echo -e "\t\t --cpu=<int>:\t\tcpu核数"
+	echo -e "\t\t --basefolder=<str>:\t虚拟机的存储目录(默认:${basefolder})"
+	echo -e "\t\t --cpu=<int>:\t\tcpu核数"
 	echo -e "\t\t --network_interface=<str>:\t宿主机网卡名称"
 	echo -e "\t\t --disk_size=<int>:\t磁盘大小（Mb）"
 	echo -e "\t\t --disk_format=<str>:\t磁盘格式（VDI|VMDK|VHD）"
-   	echo -e "\t\t --system_image=<str>:\t系统镜像路径"
-   	echo -e "\t\t --status=<on|off>:\t开启或关闭vrde"
+	echo -e "\t\t --system_image=<str>:\t系统镜像路径"
+	echo -e "\t\t --status=<on|off>:\t开启或关闭vrde"
 }
 
 
